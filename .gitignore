@@ -1,0 +1,8 @@
+.env
+Project_description.txt
+.myenv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.vscode/

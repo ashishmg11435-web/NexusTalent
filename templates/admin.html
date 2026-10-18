@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="NexusTalent Admin — Manage job postings, review applicants, and control your talent pipeline.">
+  <title>NexusTalent — Recruiter Portal</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- ═══ Toast Container ═══ -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- ═══ Login View ═══ -->
+  <div id="login-view" class="login-wrapper">
+    <div class="glass-card login-card">
+      <div class="logo-icon" style="border-radius:var(--radius-md);">N</div>
+      <h1>Recruiter Portal</h1>
+      <p class="login-subtitle">Sign in with your admin credentials to manage jobs and candidates.</p>
+
+      <form id="login-form" autocomplete="off">
+        <div class="form-group">
+          <label class="form-label" for="login-username">Username</label>
+          <input class="form-input" type="text" id="login-username" name="username" placeholder="admin" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="login-password">Password</label>
+          <input class="form-input" type="password" id="login-password" name="password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-login">
+          🔓 Sign In
+        </button>
+      </form>
+
+      <p style="text-align:center; margin-top:1.5rem; font-size:0.82rem; color:var(--clr-text-muted);">
+        <a href="/" style="color:var(--clr-info); text-decoration:none;">← Back to Marketplace</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ═══ Admin Dashboard (hidden until login) ═══ -->
+  <div id="admin-dashboard" class="admin-layout">
+
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="container">
+        <a href="/admin" class="navbar-brand">
+          <span class="logo-icon">N</span>
+          NexusTalent <span style="color:var(--clr-text-muted); font-weight:400; font-size:0.85rem; margin-left:0.35rem;">Admin</span>
+        </a>
+        <ul class="navbar-nav">
+          <li><a href="/" data-nav="marketplace">🌐 Marketplace</a></li>
+          <li><a href="#" id="btn-logout">🚪 Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="section">
+      <div class="container">
+
+        <!-- Header -->
+        <div class="admin-header">
+          <div>
+            <h1>Dashboard</h1>
+            <p style="color:var(--clr-text-secondary); font-size:0.95rem;">Manage job postings and review applicants.</p>
+          </div>
+          <div class="admin-actions">
+            <button class="btn btn-primary" id="btn-open-job-modal">➕ New Job Posting</button>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid" id="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="stat-total-jobs">0</div>
+            <div class="stat-label">Total Jobs</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-total-applicants">0</div>
+            <div class="stat-label">Applicants</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-total-profiles">0</div>
+            <div class="stat-label">Talent Profiles</div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs" id="admin-tabs">
+          <button class="tab-btn active" data-tab="tab-jobs">📋 Job Postings</button>
+          <button class="tab-btn" data-tab="tab-applicants">👥 Applicants</button>
+        </div>
+
+        <!-- Tab: Job Postings -->
+        <div class="tab-content active" id="tab-jobs">
+          <div style="position:relative;">
+            <div class="loading-overlay" id="admin-jobs-loading">
+              <div class="spinner"></div>
+            </div>
+
+            <div class="data-table" style="overflow-x:auto;">
+              <table class="data-table" id="admin-jobs-table">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Company</th>
+                    <th>Location</th>
+                    <th>Skills</th>
+                    <th>Posted</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-jobs-tbody">
+                  <!-- Injected by JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <div class="empty-state" id="admin-jobs-empty" style="display:none;">
+              <div class="empty-state-icon">📋</div>
+              <h3>No Job Postings Yet</h3>
+              <p>Click "New Job Posting" to create your first listing.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Applicants -->
+        <div class="tab-content" id="tab-applicants">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.75rem;">
+            <p style="color:var(--clr-text-secondary); font-size:0.9rem; margin:0;">
+              Review and update application statuses below.
+            </p>
+            <button class="btn btn-secondary btn-sm" onclick="loadAdminApplicants()">🔄 Refresh</button>
+          </div>
+
+          <div style="position:relative;">
+            <div class="loading-overlay" id="admin-applicants-loading">
+              <div class="spinner"></div>
+            </div>
+
+            <div id="admin-applicants-list" class="application-list">
+              <!-- Injected by JS -->
+            </div>
+
+            <div class="empty-state" id="admin-applicants-empty" style="display:none;">
+              <div class="empty-state-icon">👥</div>
+              <h3>No Applicants Yet</h3>
+              <p>Applicants will appear here once candidates start applying to your jobs.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ═══ Create / Edit Job Modal ═══ -->
+  <div class="modal-overlay" id="job-modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="job-modal-title">Create Job Posting</h2>
+        <button class="modal-close" id="job-modal-close">&times;</button>
+      </div>
+      <form id="job-form" autocomplete="off">
+        <input type="hidden" id="job-edit-id" name="job_id">
+
+        <div class="form-group">
+          <label class="form-label" for="job-title">Job Title</label>
+          <input class="form-input" type="text" id="job-title" name="title" placeholder="e.g. Senior Backend Engineer" required>
+        </div>
+
+        <div class="form-group" style="margin-top:1rem;">
+          <label class="form-label" for="job-company">Company</label>
+          <input class="form-input" type="text" id="job-company" name="company" placeholder="e.g. Acme Corp" required>
+        </div>
+
+        <div class="form-group" style="margin-top:1rem;">
+          <label class="form-label" for="job-location">Location</label>
+          <input class="form-input" type="text" id="job-location" name="location" placeholder="e.g. Remote / New York">
+        </div>
+
+        <div class="form-group" style="margin-top:1rem;">
+          <label class="form-label" for="job-type">Job Type</label>
+          <select class="form-select" id="job-type" name="job_type">
+            <option value="Full-time">Full-time</option>
+            <option value="Part-time">Part-time</option>
+            <option value="Contract">Contract</option>
+            <option value="Internship">Internship</option>
+            <option value="Remote">Remote</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-top:1rem;">
+          <label class="form-label" for="job-salary">Salary Range</label>
+          <input class="form-input" type="text" id="job-salary" name="salary" placeholder="e.g. $120k – $160k">
+        </div>
+
+        <div class="form-group" style="margin-top:1rem;">
+          <label class="form-label" for="job-skills">Required Skills</label>
+          <input class="form-input" type="text" id="job-skills" name="skills" placeholder="e.g. Python, FastAPI, MongoDB" required>
+          <span class="form-hint">Comma-separated list</span>
+        </div>
+
+        <div class="form-group" style="margin-top:1rem;">
+          <label class="form-label" for="job-description">Description</label>
+          <textarea class="form-textarea" id="job-description" name="description" placeholder="Describe the role, responsibilities, and requirements..." rows="4"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top:1.5rem;" id="btn-submit-job">
+          🚀 Publish Job
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══ Footer ═══ -->
+  <footer style="text-align:center; padding:2rem 1rem 3rem; color:var(--clr-text-muted); font-size:0.82rem; position:relative; z-index:1;">
+    <p>© 2026 NexusTalent Admin Panel.</p>
+  </footer>
+
+  <script src="/static/js/admin.js"></script>
+</body>
+</html>
