@@ -1,5 +1,6 @@
 # 🌟 NexusTalent — High-Performance Talent Marketplace & Matching Engine
 
+[![Live Demo](https://img.shields.io/badge/Vercel-Live_Demo-black.svg?style=for-the-badge&logo=vercel&logoColor=white)](https://nexus-talent-nine.vercel.app/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688.svg?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![MongoDB](https://img.shields.io/badge/MongoDB_Atlas-4EA94B.svg?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/atlas)
@@ -7,6 +8,17 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
 **NexusTalent** is a production-ready, full-stack talent marketplace and profile-matching ecosystem designed as a low-latency, specialized alternative to enterprise platforms. Built on an asynchronous **FastAPI** backend, **MongoDB Atlas** for document persistence, and **Redis Cloud** for sub-millisecond caching of skill-matching queries, NexusTalent delivers a smooth, lightning-fast experience for both job seekers and recruiters.
+
+---
+
+## 🌐 Live Deployment
+
+The application is deployed on Vercel and connected to cloud databases:
+
+- 🚀 **Candidate Marketplace Portal:** [https://nexus-talent-nine.vercel.app/](https://nexus-talent-nine.vercel.app/)
+- 🛡️ **Recruiter & Admin Dashboard:** [https://nexus-talent-nine.vercel.app/admin](https://nexus-talent-nine.vercel.app/admin)
+- 📖 **Interactive Swagger API Docs:** [https://nexus-talent-nine.vercel.app/docs](https://nexus-talent-nine.vercel.app/docs)
+- 📑 **Alternative ReDoc API Docs:** [https://nexus-talent-nine.vercel.app/redoc](https://nexus-talent-nine.vercel.app/redoc)
 
 ---
 
@@ -43,11 +55,12 @@ flowchart TD
 
 | Layer | Technology | Description |
 | :--- | :--- | :--- |
+| **Hosting & Cloud** | [Vercel](https://vercel.com/) | Serverless edge deployment for API & static assets |
 | **Backend** | [FastAPI](https://fastapi.tiangolo.com/) | Asynchronous Python REST framework with automatic OpenAPI docs |
 | **Data Validation** | [Pydantic v2](https://docs.pydantic.dev/) | Strict schema validation and type safety |
 | **Primary Database**| [MongoDB Atlas](https://www.mongodb.com/atlas) | Cloud NoSQL database storing users, jobs, and applications |
 | **Cache Layer** | [Redis Cloud](https://redis.io/) | In-memory key-value store caching matching jobs and sessions |
-| **Frontend** | Vanilla JS & Semantic CSS3 | Zero-dependency, lightweight, reactive UI with glassmorphism |
+| **Frontend** | Vanilla JS & Semantic CSS3 | Zero-dependency, lightweight, reactive UI with modern styling |
 | **Templating** | [Jinja2](https://palletsprojects.com/p/jinja/) | Server-side template rendering for portal entrypoints |
 
 ---
@@ -78,12 +91,13 @@ NexusTalent/
 ├── .gitignore
 ├── main.py                  # Application entry point & router mounting
 ├── README.md                # Project documentation
-└── requirements.txt         # Pinned Python package dependencies
+├── requirements.txt         # Pinned Python package dependencies
+└── vercel.json              # Vercel serverless build & routing configuration
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Getting Started Locally
 
 ### Prerequisites
 
@@ -141,11 +155,40 @@ ADMIN_PASSWORD=admin123
 uvicorn main:app --reload --port 8000
 ```
 
-Once running, access the portals at:
+Once running, access the portals locally at:
 - **Candidate Portal:** [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 - **Recruiter Dashboard:** [http://127.0.0.1:8000/admin](http://127.0.0.1:8000/admin)
 - **Interactive API Docs (Swagger):** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 - **Alternative API Docs (ReDoc):** [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+
+---
+
+## ☁️ Deployment on Vercel
+
+The project includes a pre-configured [`vercel.json`](file:///d:/FastAPI%20projects/NexusTalent/vercel.json) enabling direct serverless deployment:
+
+```json
+{
+  "builds": [
+    {
+      "src": "main.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "main.py"
+    }
+  ]
+}
+```
+
+### Deployment Steps:
+1. Push code with `vercel.json` to GitHub.
+2. Import repository in [Vercel](https://vercel.com).
+3. Set the Environment Variables (`MONGODB_URL`, `MONGODB_DB_NAME`, `REDIS_URL`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`) under **Project Settings > Environment Variables**.
+4. Ensure MongoDB Atlas Network Access whitelist includes `0.0.0.0/0` (required for dynamic serverless IPs).
 
 ---
 
